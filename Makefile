@@ -64,7 +64,7 @@ pre-commit: .git/hooks/pre-commit
 # Run pytest suite.
 .PHONY:
 test:
-	pytest
+	pytest tests/
 
 # Entrypoint.
 .PHONY: run

@@ -1,16 +1,9 @@
-import pytest
+from git_pyclone import main
 
 
-def test_pytest():
+def test_main():
     """
-    Assert pytest is installed and can run tests.
+    Test the entrypoint to the git_cyclone application.
     """
+    main()
     assert True
-
-
-def test_exception():
-    """
-    Assert exception testing works.
-    """
-    with pytest.raises(ZeroDivisionError):
-        1 / 0
