@@ -25,19 +25,32 @@ activate:
 	$(info Activating poetry shell...)
 	@poetry shell
 
+# Install explicitly.
+.PHONY: install
+install: .git/hooks/pre-commit
+	@poetry install
+
 # Install development dependencies.
 .PHONY: setup
 setup: activate .git/hooks/pre-commit pyproject.toml poetry.lock requirements.txt ;
 
 ############################################
-# Clean
+# Deployment
 ############################################
 
 # Clean cache.
 .PHONY: clean
 clean:
-	$(info Removing __pycache__ directory...)
-	rm -rf "git_clone/__pycache__"
+	$(info Removing __pycache__ directories...)
+	rm -rf ".mypy_cache"
+	rm -rf ".pytest_cache"
+	rm -rf "git_pyclone/__pycache__"
+	rm -rf "tests/__pycache__"
+
+# Build the poetry package.
+.PHONY: build
+build: pre-commit test
+	@poetry build
 
 ############################################
 # Entrypoint.
@@ -47,6 +60,11 @@ clean:
 .PHONY:
 pre-commit: .git/hooks/pre-commit
 	pre-commit run --all-files
+
+# Run pytest suite.
+.PHONY:
+test:
+	pytest
 
 # Entrypoint.
 .PHONY: run

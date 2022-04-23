@@ -5,6 +5,8 @@ A CLI tool to clone repositories from a git remote.
 ## Features
 
 - Modern CLI with [Typer][typer].
+- Consistent bug detection, linting, and formatting with [`pre-commit`][precommit] hooks.
+- Test suite using [`pytest`][pytest].
 
 ## Quickstart
 
@@ -23,13 +25,21 @@ git clone git@github.com:rimij405/git-pyclone.git
 gh repo clone rimij405/git-pyclone
 ```
 
-Run tests using `pytest`.
+Run tests using [`pytest`][]:
 
 ```bash
-pytest
+make test
+```
+
+Run [`pre-commit`][precommit] hooks using:
+
+```bash
+make pre-commit
 ```
 
 <!-- LINKS -->
 
 [typer]: https://typer.tiangolo.com/
 [poetry]: https://python-poetry.org/
+[precommit]: https://pre-commit.com/
+[pytest]: https://docs.pytest.org/
