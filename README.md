@@ -1,5 +1,7 @@
 # git-pyclone
 
+[![GitHub Actions Demo](https://github.com/rimij405/git-pyclone/actions/workflows/github-actions-demo.yml/badge.svg?branch=main)](https://github.com/rimij405/git-pyclone/actions/workflows/github-actions-demo.yml)
+
 A CLI tool to clone repositories from a git remote.
 
 ## Features
