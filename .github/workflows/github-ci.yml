@@ -1,0 +1,90 @@
+# This is a basic workflow to help you get started with Actions
+
+name: GitHub CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  ##################################
+  # build: Prepare CI environment
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9, 3.10]
+        poetry-version: [1.1.13]
+        os: [ubuntu-20.04, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Repository into Workspace
+        uses: actions/checkout@v3
+
+      # Verify contents of the repository.
+      - name: Verify Contents
+        run: |
+          ls ${{ github.workspace }}
+
+      # Setup the Python dependencies.
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: x64
+
+      # Install `poetry-python`.
+      - name: Install Poetry Package Manager
+        uses: abatilo/actions-poetry@v2.1.4
+        with:
+          poetry-version: ${{ matrix.poetry-version }}
+
+      # View the Poetry version and help message.
+      - name: Verify Poetry Installation
+        run: |
+          poetry --version
+          poetry --help
+
+      # Verify Makefile version.
+      - name: Verify Makefile Installation
+        run: |
+          make --version
+          make --help
+
+      # Install dependencies.
+      - name: Install Dependencies
+        run: |
+          make setup
+
+      # Analyze code with pylint.
+      - name: Lint Code
+        run: |
+          pylint $(git ls-files *.py)
+
+      # Test with pytest.
+      - name: Generate Test Coverage Report
+        run: |
+          pytest
+
+      # Save Test Coverage Artifacts
+      - name: Upload Test Coverage Results
+        uses: actions/upload-artifact@v3.0.0
+        with:
+          name: testcov_artifact
+          path: |
+            htmlcov/*
+            coverage.xml
+          retention-days: 1
+
+      # Job status summary
+      - name: Summary
+        run: echo "🍏 This job's status is ${{ job.status }}."

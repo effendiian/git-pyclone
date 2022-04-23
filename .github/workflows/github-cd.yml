@@ -1,0 +1,77 @@
+# This workflow will upload a Python Package using Poetry when a release is created
+
+name: GitHub CD
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  ##################################
+  # deploy: Prepare CI environment
+  deploy:
+    runs-on: ubuntu-20.04
+    environment: test
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout Repository into Workspace
+        uses: actions/checkout@v3
+
+      # Verify contents of the repository.
+      - name: Verify Contents
+        run: |
+          ls ${{ github.workspace }}
+
+      # Setup the Python dependencies.
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+          architecture: x64
+
+      # Install `poetry-python`.
+      - name: Install Poetry Package Manager
+        uses: abatilo/actions-poetry@v2.1.4
+        with:
+          poetry-version: "1.1.13"
+
+      # View the Poetry version and help message.
+      - name: Verify Poetry Installation
+        run: |
+          poetry --version
+          poetry --help
+
+      # Verify Makefile version.
+      - name: Verify Makefile Installation
+        run: |
+          make --version
+          make --help
+
+      # Install dependencies.
+      - name: Install dependencies
+        run: |
+          make setup
+
+      # Build the package.
+      - name: Build Package
+        run: make build
+
+      # Test Deploy
+      - name: Publish package to TestPyPI
+        if: github.event_name == 'push' && github.environment == 'test'
+        uses: pypa/gh-action-pypi-publish@release/v1.5
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: ${{ secrets.PYPI_REPOSITORY }}
+
+      # Publish to the official PyPI repository.
+      - name: Publish Package
+        if: github.event_name == 'push' && github.environment == 'production' && startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@release/v1.5
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
