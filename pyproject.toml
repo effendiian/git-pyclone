@@ -1,0 +1,39 @@
+[tool.poetry]
+authors = ["Ian Effendi <effendiian@gmail.com>"]
+description = "CLI helper for cloning several git repositories listed in an external file"
+include = [
+  "LICENSE",
+]
+keywords = ["Git", "Version Control", "Downloader"]
+license = "MPL 2.0"
+maintainers = ["Ian Effendi <effendiian@gmail.com>"]
+name = "git_pyclone"
+repository = "https://github.com/rimij405/git-pyclone"
+version = "0.0.1"
+
+[tool.poetry.dependencies]
+# Python version.
+python = "^3.8"
+# Dependencies.
+dload = "0.6"
+prodict = "0.8.18"
+tomli = "2.0.1"
+typer = "0.4.1"
+
+[tool.poetry.dev-dependencies]
+pip = "22.0.4"
+pre-commit = "2.18.1"
+pytest = "7.1.1"
+setuptools = "62.1.0"
+wheel = "0.37.1"
+
+[tool.poetry.scripts]
+git-pyclone = "git_pyclone:main"
+run = "git_pyclone:main"
+
+[tool.poetry.urls]
+issues = "https://github.com/rimij405/git-pyclone/issues"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
